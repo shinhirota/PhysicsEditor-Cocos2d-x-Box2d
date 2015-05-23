@@ -34,7 +34,7 @@
 //
 
 #include "GB2ShapeCache-x.h"
-#include "Box2D.h"
+#include "Box2D/Box2D.h"
 #include "CCNS.h"
 
 using namespace cocos2d;
@@ -139,7 +139,7 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
 
     b2Vec2 vertices[b2_maxPolygonVertices];
     
-    CCDictElement *dictElem;
+    DictElement *dictElem;
     std::string bodyName;
 	CCDictionary *bodyData;
     //iterate body list
@@ -150,7 +150,7 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
         
         
         BodyDef *bodyDef = new BodyDef();
-        bodyDef->anchorPoint = CCPointFromString(static_cast<CCString *>(bodyData->objectForKey("anchorpoint"))->getCString());
+        bodyDef->anchorPoint = PointFromString(static_cast<CCString *>(bodyData->objectForKey("anchorpoint"))->getCString());
         CCArray *fixtureList = (CCArray*)(bodyData->objectForKey("fixtures"));
         FixtureDef **nextFixtureDef = &(bodyDef->fixtures);
         
@@ -180,7 +180,7 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
 			if (cb)
 				callbackData = cb->intValue();
 
-			std::string fixtureType = static_cast<CCString *>(fixtureData->objectForKey("fixture_type"))->m_sString;
+			std::string fixtureType = static_cast<CCString *>(fixtureData->objectForKey("fixture_type"))->_string;
 
 			if (fixtureType == "POLYGON") {
 				CCArray *polygonsArray = (CCArray *)(fixtureData->objectForKey("polygons"));
@@ -203,7 +203,7 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
                     CCARRAY_FOREACH(polygonArray, piter)
                     {
                         CCString *verStr = (CCString*)piter;
-                        CCPoint offset = CCPointFromString(verStr->getCString());
+                        CCPoint offset = PointFromString(verStr->getCString());
                         vertices[vindex].x = (offset.x / ptmRatio) ;
                         vertices[vindex].y = (offset.y / ptmRatio) ;
                         vindex++;
@@ -229,7 +229,7 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
                 b2CircleShape *circleShape = new b2CircleShape();
 				
                 circleShape->m_radius = static_cast<CCString *>(circleData->objectForKey("radius"))->floatValue() / ptmRatio;
-				CCPoint p = CCPointFromString(static_cast<CCString *>(circleData->objectForKey("position"))->getCString());
+				CCPoint p = PointFromString(static_cast<CCString *>(circleData->objectForKey("position"))->getCString());
                 circleShape->m_p = b2Vec2(p.x / ptmRatio, p.y / ptmRatio);
                 fix->fixture.shape = circleShape;
 				
